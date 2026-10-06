@@ -143,3 +143,270 @@ st.sidebar.caption(
 st.sidebar.caption(
     "Algorithm: K-Means Clustering"
 )
+
+# =========================================================
+# HOME PAGE
+# =========================================================
+
+if page == "🏠 Home":
+
+    st.title(
+        "🏦 Banking Customer Segmentation"
+    )
+
+    st.subheader(
+        "Customer Segmentation using K-Means Clustering"
+    )
+
+    st.write(
+        "This application uses Machine Learning to group "
+        "banking customers based on their financial and "
+        "transactional behaviour."
+    )
+
+    st.divider()
+
+    # =====================================================
+    # METRICS
+    # =====================================================
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+
+        st.metric(
+            "👥 Total Customers",
+            len(df)
+        )
+
+    with col2:
+
+        st.metric(
+            "🎯 Number of Clusters",
+            df["Cluster"].nunique()
+        )
+
+    with col3:
+
+        st.metric(
+            "💰 Avg Income",
+            f"₹{df['Annual_Income'].mean():,.0f}"
+        )
+
+    with col4:
+
+        st.metric(
+            "💳 Avg Spending",
+            f"₹{df['Monthly_Spending'].mean():,.0f}"
+        )
+
+    st.divider()
+
+    # =====================================================
+    # PROJECT OVERVIEW
+    # =====================================================
+
+    st.subheader(
+        "📌 Project Overview"
+    )
+
+    st.write(
+        """
+        The Banking Customer Segmentation project uses the
+        K-Means clustering algorithm to identify groups of
+        customers with similar financial and behavioural
+        characteristics.
+
+        The model considers factors such as:
+
+        • Annual Income
+
+        • Account Balance
+
+        • Transactions Per Month
+
+        • Loan Amount
+
+        • Monthly Spending
+        """
+    )
+
+    st.info(
+        "💡 Use the sidebar to predict a new customer's "
+        "segment or explore the customer dashboard."
+    )
+
+
+# =========================================================
+# CUSTOMER PREDICTION PAGE
+# =========================================================
+
+elif page == "🎯 Customer Prediction":
+
+    st.title(
+        "🎯 Customer Segment Prediction"
+    )
+
+    st.write(
+        "Enter customer information below to predict "
+        "the customer's segment."
+    )
+
+    st.divider()
+
+    # =====================================================
+    # CUSTOMER INPUT
+    # =====================================================
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+
+        age = st.number_input(
+            "🎂 Age",
+            min_value=18,
+            max_value=100,
+            value=30,
+            step=1
+        )
+
+        annual_income = st.number_input(
+            "💰 Annual Income",
+            min_value=0,
+            value=50000,
+            step=1000
+        )
+
+        account_balance = st.number_input(
+            "🏦 Account Balance",
+            min_value=0,
+            value=15000,
+            step=1000
+        )
+
+        transactions = st.number_input(
+            "💳 Transactions Per Month",
+            min_value=0,
+            value=15,
+            step=1
+        )
+
+    with col2:
+
+        credit_score = st.number_input(
+            "📊 Credit Score",
+            min_value=300,
+            max_value=900,
+            value=700,
+            step=1
+        )
+
+        loan_amount = st.number_input(
+            "💵 Loan Amount",
+            min_value=0,
+            value=20000,
+            step=1000
+        )
+
+        monthly_spending = st.number_input(
+            "🛒 Monthly Spending",
+            min_value=0,
+            value=5000,
+            step=500
+        )
+
+    st.divider()
+
+    # =====================================================
+    # PREDICT BUTTON
+    # =====================================================
+
+    predict_button = st.button(
+        "🔮 Predict Customer Segment",
+        use_container_width=True
+    )
+
+
+    # =====================================================
+    # PREDICTION
+    # =====================================================
+
+    if predict_button:
+
+        new_customer = pd.DataFrame({
+
+            "Annual_Income": [
+                annual_income
+            ],
+
+            "Account_Balance": [
+                account_balance
+            ],
+
+            "Transactions_Per_Month": [
+                transactions
+            ],
+
+            "Loan_Amount": [
+                loan_amount
+            ],
+
+            "Monthly_Spending": [
+                monthly_spending
+            ]
+        })
+
+
+        # Scale customer data
+
+        new_customer_scaled = scaler.transform(
+            new_customer
+        )
+
+
+        # Predict cluster
+
+        predicted_cluster = kmeans.predict(
+            new_customer_scaled
+        )[0]
+
+
+        # Get segment
+
+        predict_segment = cluster_name[
+            predicted_cluster
+        ]
+
+
+        # Save prediction in session
+
+        st.session_state[
+            "predicted_cluster"
+        ] = predicted_cluster
+
+
+        st.session_state[
+            "predict_segment"
+        ] = predict_segment
+
+
+        # Save customer information
+
+        st.session_state[
+            "customer_data"
+        ] = {
+
+            "Age": age,
+
+            "Annual_Income": annual_income,
+
+            "Account_Balance": account_balance,
+
+            "Credit_Score": credit_score,
+
+            "Transactions_Per_Month": transactions,
+
+            "Loan_Amount": loan_amount,
+
+            "Monthly_Spending": monthly_spending
+        }
