@@ -410,3 +410,246 @@ elif page == "🎯 Customer Prediction":
 
             "Monthly_Spending": monthly_spending
         }
+    
+    # =====================================================
+    # SHOW RESULT
+    # =====================================================
+
+    if "predicted_cluster" in st.session_state:
+
+        predicted_cluster = (
+            st.session_state[
+                "predicted_cluster"
+            ]
+        )
+
+        predict_segment = (
+            st.session_state[
+                "predict_segment"
+            ]
+        )
+
+        customer_data = (
+            st.session_state[
+                "customer_data"
+            ]
+        )
+
+        st.divider()
+
+        st.subheader(
+            "🎯 Prediction Result"
+        )
+
+        result_col1, result_col2 = st.columns(2)
+
+        with result_col1:
+
+            st.success(
+                f"🎯 Customer Segment: "
+                f"{predict_segment}"
+            )
+
+        with result_col2:
+
+            st.info(
+                f"🔢 Cluster: "
+                f"{predicted_cluster}"
+            )
+
+        st.write(
+            f"📌 **Customer Profile:** "
+            f"{cluster_description[predicted_cluster]}"
+        )
+
+        st.divider()
+
+        # =================================================
+        # CUSTOMER INFORMATION
+        # =================================================
+
+        st.subheader(
+            "📋 Customer Information"
+        )
+
+        customer_summary = pd.DataFrame({
+
+            "Feature": [
+
+                "Age",
+
+                "Annual Income",
+
+                "Account Balance",
+
+                "Credit Score",
+
+                "Transactions Per Month",
+
+                "Loan Amount",
+
+                "Monthly Spending"
+            ],
+
+            "Value": [
+
+                customer_data["Age"],
+
+                f"₹{customer_data['Annual_Income']:,.0f}",
+
+                f"₹{customer_data['Account_Balance']:,.0f}",
+
+                customer_data["Credit_Score"],
+
+                customer_data[
+                    "Transactions_Per_Month"
+                ],
+
+                f"₹{customer_data['Loan_Amount']:,.0f}",
+
+                f"₹{customer_data['Monthly_Spending']:,.0f}"
+            ]
+        })
+
+        st.dataframe(
+            customer_summary,
+            use_container_width=True,
+            hide_index=True
+        )
+
+        st.divider()
+
+        # =================================================
+        # SAVE CUSTOMER
+        # =================================================
+
+        save_customer = st.button(
+            "💾 Save Customer to Dataset",
+            use_container_width=True
+        )
+
+        if save_customer:
+
+            # =============================================
+            # GENERATE CUSTOMER ID
+            # =============================================
+
+            existing_ids = (
+                df["Customer_ID"]
+                .astype(str)
+            )
+
+            numeric_ids = pd.to_numeric(
+
+                existing_ids.str.extract(
+                    r"(\d+)",
+                    expand=False
+                ),
+
+                errors="coerce"
+            )
+
+            if numeric_ids.notna().any():
+
+                next_id = (
+                    int(numeric_ids.max()) + 1
+                )
+
+            else:
+
+                next_id = 1
+
+
+            customer_id = (
+                f"{next_id:05d}"
+            )
+
+
+            # =============================================
+            # CREATE NEW CUSTOMER
+            # =============================================
+
+            new_row = pd.DataFrame({
+
+                "Customer_ID": [
+                    customer_id
+                ],
+
+                "Age": [
+                    customer_data["Age"]
+                ],
+
+                "Annual_Income": [
+                    customer_data["Annual_Income"]
+                ],
+
+                "Account_Balance": [
+                    customer_data["Account_Balance"]
+                ],
+
+                "Credit_Score": [
+                    customer_data["Credit_Score"]
+                ],
+
+                "Transactions_Per_Month": [
+                    customer_data[
+                        "Transactions_Per_Month"
+                    ]
+                ],
+
+                "Loan_Amount": [
+                    customer_data["Loan_Amount"]
+                ],
+
+                "Monthly_Spending": [
+                    customer_data[
+                        "Monthly_Spending"
+                    ]
+                ],
+
+                "cluster": [
+                    predicted_cluster
+                ],
+
+                "Customer_Segment": [
+                    predict_segment
+                ]
+            })
+
+
+            # =============================================
+            # ADD CUSTOMER
+            # =============================================
+
+            df = pd.concat(
+                [
+                    df,
+                    new_row
+                ],
+                ignore_index=True
+            )
+
+
+            # =============================================
+            # SAVE DATASET
+            # =============================================
+
+            try:
+
+                df.to_csv(
+                    "Data/Banking_Segmentation_Result.csv",
+                    index=False
+                )
+
+                st.success(
+                    f"✅ Customer {customer_id} "
+                    f"saved successfully!"
+                )
+
+            except PermissionError:
+
+                st.error(
+                    "⚠️ Unable to save the customer record. "
+                    "Please close the dataset file in Excel "
+                    "or any other application and try again."
+                )
