@@ -653,3 +653,331 @@ elif page == "🎯 Customer Prediction":
                     "Please close the dataset file in Excel "
                     "or any other application and try again."
                 )
+
+# =========================================================
+# CUSTOMER DASHBOARD
+# =========================================================
+
+elif page == "📊 Customer Dashboard":
+
+    st.title(
+        "📊 Customer Analytics Dashboard"
+    )
+
+    st.write(
+        "Analyze customer segments based on financial "
+        "and behavioural characteristics."
+    )
+
+    st.divider()
+
+
+    # =====================================================
+    # CLUSTER SUMMARY
+    # =====================================================
+
+    cluster_summary = (
+
+        df.groupby("Cluster")
+
+        .agg(
+
+            Customers=(
+                "Cluster",
+                "count"
+            ),
+
+            Avg_Income=(
+                "Annual_Income",
+                "mean"
+            ),
+
+            Avg_Balance=(
+                "Account_Balance",
+                "mean"
+            ),
+
+            Avg_Transactions=(
+                "Transactions_Per_Month",
+                "mean"
+            ),
+
+            Avg_Loan=(
+                "Loan_Amount",
+                "mean"
+            ),
+
+            Avg_Spending=(
+                "Monthly_Spending",
+                "mean"
+            )
+        )
+
+        .reset_index()
+    )
+
+
+    # =====================================================
+    # SEGMENT NAME
+    # =====================================================
+
+    cluster_summary["Segment"] = (
+
+        cluster_summary["Cluster"]
+
+        .map(cluster_name)
+    )
+
+
+    # =====================================================
+    # METRICS
+    # =====================================================
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+
+        st.metric(
+            "👥 Total Customers",
+            len(df)
+        )
+
+    with col2:
+
+        st.metric(
+            "🎯 Clusters",
+            df["Cluster"].nunique()
+        )
+
+    with col3:
+
+        st.metric(
+            "💰 Avg Income",
+            f"₹{df['Annual_Income'].mean():,.0f}"
+        )
+
+    with col4:
+
+        st.metric(
+            "🛒 Avg Spending",
+            f"₹{df['Monthly_Spending'].mean():,.0f}"
+        )
+
+
+    st.divider()
+
+
+    # =====================================================
+    # CUSTOMER DISTRIBUTION
+    # =====================================================
+
+    st.subheader(
+        "👥 Customer Distribution"
+    )
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+
+        fig_bar = px.bar(
+
+            cluster_summary,
+
+            x="Segment",
+
+            y="Customers",
+
+            text="Customers",
+
+            title="Customers by Segment"
+        )
+
+        st.plotly_chart(
+            fig_bar,
+            use_container_width=True
+        )
+
+
+    with col2:
+
+        fig_pie = px.pie(
+
+            cluster_summary,
+
+            names="Segment",
+
+            values="Customers",
+
+            title="Customer Segment Distribution"
+        )
+
+        st.plotly_chart(
+            fig_pie,
+            use_container_width=True
+        )
+
+
+    st.divider()
+
+
+    # =====================================================
+    # INCOME VS SPENDING
+    # =====================================================
+
+    st.subheader(
+        "💰 Income vs Monthly Spending"
+    )
+
+    fig_scatter = px.scatter(
+
+        df,
+
+        x="Annual_Income",
+
+        y="Monthly_Spending",
+
+        color="Cluster",
+
+        size="Account_Balance",
+
+        hover_data=[
+
+            "Customer_ID",
+
+            "Account_Balance",
+
+            "Transactions_Per_Month",
+
+            "Loan_Amount"
+        ],
+
+        title="Customer Behaviour by Cluster"
+    )
+
+    st.plotly_chart(
+        fig_scatter,
+        use_container_width=True
+    )
+
+
+    st.divider()
+
+
+    # =====================================================
+    # CLUSTER SUMMARY TABLE
+    # =====================================================
+
+    st.subheader(
+        "📋 Cluster Summary"
+    )
+
+    display_summary = (
+        cluster_summary.copy()
+    )
+
+    display_summary[
+        "Avg_Income"
+    ] = (
+        display_summary[
+            "Avg_Income"
+        ].round(0)
+    )
+
+    display_summary[
+        "Avg_Balance"
+    ] = (
+        display_summary[
+            "Avg_Balance"
+        ].round(0)
+    )
+
+    display_summary[
+        "Avg_Transactions"
+    ] = (
+        display_summary[
+            "Avg_Transactions"
+        ].round(1)
+    )
+
+    display_summary[
+        "Avg_Loan"
+    ] = (
+        display_summary[
+            "Avg_Loan"
+        ].round(0)
+    )
+
+    display_summary[
+        "Avg_Spending"
+    ] = (
+        display_summary[
+            "Avg_Spending"
+        ].round(0)
+    )
+
+    st.dataframe(
+        display_summary,
+        use_container_width=True,
+        hide_index=True
+    )
+
+
+    st.divider()
+
+
+    # =====================================================
+    # BUSINESS INSIGHTS
+    # =====================================================
+
+    st.subheader(
+        "💡 Customer Segment Insights"
+    )
+
+    for _, row in cluster_summary.iterrows():
+
+        segment = row["Segment"]
+
+        if segment == "High Value":
+
+            st.success(
+
+                f"🟢 **{segment}** — "
+
+                f"{int(row['Customers'])} customers. "
+
+                f"Average income is "
+                f"₹{row['Avg_Income']:,.0f} "
+
+                f"and average monthly spending is "
+                f"₹{row['Avg_Spending']:,.0f}."
+            )
+
+        elif segment == "Medium Value":
+
+            st.warning(
+
+                f"🟡 **{segment}** — "
+
+                f"{int(row['Customers'])} customers. "
+
+                f"Average income is "
+                f"₹{row['Avg_Income']:,.0f} "
+
+                f"and average monthly spending is "
+                f"₹{row['Avg_Spending']:,.0f}."
+            )
+
+        else:
+
+            st.info(
+
+                f"🔵 **{segment}** — "
+
+                f"{int(row['Customers'])} customers. "
+
+                f"Average income is "
+                f"₹{row['Avg_Income']:,.0f} "
+
+                f"and average monthly spending is "
+                f"₹{row['Avg_Spending']:,.0f}."
+            )
