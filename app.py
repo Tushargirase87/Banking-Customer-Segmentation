@@ -1019,7 +1019,7 @@ elif page == "🔐 Admin Login":
         # LOCAL TEST PASSWORD
         # =============================================
 
-        if password == "Login@1234":
+        if password == st.secrets["auth"]["admin_password"]:
 
             st.session_state.admin_logged_in = True
 
