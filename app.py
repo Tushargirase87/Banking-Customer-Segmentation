@@ -981,3 +981,271 @@ elif page == "📊 Customer Dashboard":
                 f"and average monthly spending is "
                 f"₹{row['Avg_Spending']:,.0f}."
             )
+
+# =========================================================
+# ADMIN LOGIN
+# =========================================================
+
+elif page == "🔐 Admin Login":
+
+    st.title(
+        "🔐 Admin Login"
+    )
+
+    st.write(
+        "Authorized access is required to manage "
+        "customer records."
+    )
+
+    st.divider()
+
+
+    password = st.text_input(
+        "🔑 Admin Password",
+        type="password",
+        placeholder="Enter admin password"
+    )
+
+
+    login_button = st.button(
+        "🔓 Login",
+        use_container_width=True
+    )
+
+
+    if login_button:
+
+        # =============================================
+        # LOCAL TEST PASSWORD
+        # =============================================
+
+        if password == "Login@1234":
+
+            st.session_state.admin_logged_in = True
+
+            st.session_state.page = "👤 Customer Management"
+
+            st.rerun()
+
+        else:
+
+            st.error(
+                "❌ Invalid password. "
+                "Please enter the correct admin password."
+            )
+
+
+# =========================================================
+# CUSTOMER MANAGEMENT
+# =========================================================
+
+elif page == "👤 Customer Management":
+
+    # =====================================================
+    # SECURITY CHECK
+    # =====================================================
+
+    if not st.session_state.admin_logged_in:
+
+        st.error(
+            "🔒 Access Denied. "
+            "Please login as an administrator."
+        )
+
+        st.stop()
+
+
+    # =====================================================
+    # HEADER + LOGOUT
+    # =====================================================
+
+    col1, col2 = st.columns(
+        [5, 1]
+    )
+
+    with col1:
+
+        st.title(
+            "👤 Customer Management"
+        )
+
+    with col2:
+
+        logout = st.button(
+            "🚪 Logout"
+        )
+
+        if logout:
+
+            st.session_state.admin_logged_in = False
+
+            st.success(
+                "✅ Admin logged out successfully."
+            )
+
+            st.rerun()
+
+
+    st.write(
+        "View and manage customer records."
+    )
+
+    st.divider()
+
+
+    # =====================================================
+    # DELETE SUCCESS MESSAGE
+    # =====================================================
+
+    if "delete_success_message" in st.session_state:
+
+        st.success(
+            st.session_state[
+                "delete_success_message"
+            ]
+        )
+
+        del st.session_state[
+            "delete_success_message"
+        ]
+
+
+    # =====================================================
+    # CUSTOMER LIST
+    # =====================================================
+
+    customer_ids = (
+
+        df["Customer_ID"]
+
+        .astype(str)
+
+        .tolist()
+    )
+
+
+    if len(customer_ids) == 0:
+
+        st.info(
+            "No customer records are currently available."
+        )
+
+
+    else:
+
+        selected_customer = st.selectbox(
+
+            "Select Customer ID",
+
+            customer_ids
+        )
+
+
+        # =================================================
+        # SELECTED CUSTOMER
+        # =================================================
+
+        selected_data = df[
+
+            df["Customer_ID"]
+            .astype(str)
+
+            == selected_customer
+        ]
+
+
+        if not selected_data.empty:
+
+            st.subheader(
+                "📋 Customer Details"
+            )
+
+
+            st.dataframe(
+
+                selected_data,
+
+                use_container_width=True,
+
+                hide_index=True
+            )
+
+
+            st.divider()
+
+
+            # =============================================
+            # DELETE WARNING
+            # =============================================
+
+            st.warning(
+
+                f"⚠️ You are about to delete customer "
+                f"{selected_customer}. "
+                f"This action will permanently remove "
+                f"the customer record from the dataset."
+            )
+
+
+            delete_customer = st.button(
+
+                "🗑️ Delete Customer",
+
+                type="primary",
+
+                use_container_width=True
+            )
+
+
+            # =============================================
+            # DELETE CUSTOMER
+            # =============================================
+
+            if delete_customer:
+
+                updated_df = df[
+
+                    df["Customer_ID"]
+                    .astype(str)
+
+                    != selected_customer
+                ]
+
+
+                try:
+
+                    # Save updated dataset
+
+                    updated_df.to_csv(
+
+                        "Data/Banking_Segmentation_Result.csv",
+
+                        index=False
+                    )
+
+
+                    # Store success message
+
+                    st.session_state[
+                        "delete_success_message"
+                    ] = (
+
+                        f"Customer {selected_customer} "
+                        f"has been deleted successfully."
+                    )
+
+
+                    # Refresh application
+
+                    st.rerun()
+
+
+                except PermissionError:
+
+                    st.error(
+
+                        "⚠️ Unable to delete the customer "
+                        "record. Please close the dataset "
+                        "file in Excel or any other "
+                        "application and try again."
+                    )
