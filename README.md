@@ -100,3 +100,86 @@ The Elbow Method suggested three clusters as a practical choice for creating thr
 Although the Silhouette Score was higher for two clusters in the experiments, three clusters were selected to support the project's three-segment business interpretation.
 
 **Note:** Cluster labels such as High Value, Medium Value, and Low Activity are business interpretations of the cluster characteristics, not predefined target labels.
+
+## ✨ Key Features
+
+### 🏠 Home Page
+- Project overview and application navigation.
+- Summary metrics and customer segmentation information.
+
+### 🔮 Customer Prediction
+- Enter customer financial and banking details.
+- Predict the customer segment using the trained K-Means model.
+- Display the predicted segment and customer information.
+- Save new customer records to the dataset.
+
+### 📊 Customer Dashboard
+- Display customer summary metrics.
+- Visualize customer segment distribution.
+- Explore income versus spending patterns.
+- View cluster summary tables and business insights.
+
+### 🔐 Admin Login & Customer Management
+- Admin-protected customer management page.
+- Admin login and logout functionality.
+- View and select customer records.
+- Confirm before deleting a customer.
+- Display success or error messages after deletion.
+
+## ⚙️ Installation & Setup
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Tushargirase87/Banking-Customer-Segmentation.git
+cd Banking-Customer-Segmentation
+```
+
+### 2. Create a Virtual Environment
+
+```bash
+python -m venv venv
+```
+
+Activate it on Windows:
+
+```bash
+venv\\Scripts\\activate
+```
+
+### 3. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Configure Local Admin Password
+
+Create a `.streamlit/secrets.toml` file in the project root. Add the following configuration and replace the example password with your own:
+
+```toml
+[auth]
+admin_password = "YourNewPassword"
+```
+
+Keep this file private. Do not commit it to GitHub.
+
+### 5. Run the Application
+
+```bash
+streamlit run app.py
+```
+
+The application should open in your browser.
+
+## 📝 Usage
+
+1. Open the Streamlit application.
+2. Explore the Home page.
+3. Enter customer details on the Customer Prediction page.
+4. Review the predicted segment.
+5. Save the customer record if required.
+6. Explore customer metrics, distribution charts, and business insights on the dashboard.
+7. Use the admin login to access customer management features.
+
+**Note:** The application requires the trained model, scaler, dataset, and Python dependencies to be available at their expected paths. Verify that the repository contains the required files before running it.
