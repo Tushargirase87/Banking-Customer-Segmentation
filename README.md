@@ -183,3 +183,60 @@ The application should open in your browser.
 7. Use the admin login to access customer management features.
 
 **Note:** The application requires the trained model, scaler, dataset, and Python dependencies to be available at their expected paths. Verify that the repository contains the required files before running it.
+
+## 📸 Application Screenshots
+
+### Home Page
+![Home Page](screenshots/home.png)
+
+### Customer Prediction
+![Customer Prediction](screenshots/customer-prediction.png)
+
+### Customer Dashboard
+![Customer Dashboard](screenshots/customer-dashboard.png)
+
+### Admin Login & Customer Management
+![Customer Management](screenshots/customer-management.png)
+
+> Replace these image paths with your actual screenshot filenames. The images will appear on GitHub once the corresponding files are uploaded.
+
+## 📈 Results
+
+- Applied K-Means clustering to group banking customers into three segments.
+- Used feature scaling before clustering.
+- Evaluated clustering configurations using the Elbow Method and Silhouette Score.
+- Built an interactive Streamlit application for customer segment prediction.
+- Added dashboard visualizations, customer summaries, and customer management functionality.
+
+## 💡 Business Insights
+
+Customer segmentation can help banking teams:
+
+- Understand differences in customer financial behavior.
+- Identify customers with relatively high or moderate activity.
+- Explore customer transaction and spending patterns.
+- Support targeted customer engagement and service planning.
+
+These segments are analytical groupings, not direct measures of creditworthiness or guaranteed customer profitability.
+
+## 🔮 Future Improvements
+
+- Deploy the application to a cloud platform.
+- Improve authentication and role-based access control.
+- Store customer records in a database instead of a local CSV file.
+- Add automated data validation and logging.
+- Monitor clustering quality as new customer data becomes available.
+
+## 🎓 Conclusion
+
+This project demonstrates how unsupervised machine learning can be used to analyze banking customer behavior and create meaningful customer segments. By combining K-Means clustering, data visualization, and a Streamlit application, the project provides an interactive way to explore customer patterns and support data-informed business decisions.
+
+## 👨‍💻 Author
+
+**Tushar Girase**
+
+- GitHub: [@Tushargirase87](https://github.com/Tushargirase87)
+
+## 📄 License
+
+This project is intended for educational and portfolio purposes. Add a suitable open-source license if you want others to reuse or distribute the code.
