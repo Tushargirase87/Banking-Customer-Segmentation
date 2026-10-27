@@ -39,6 +39,8 @@ Banking-Customer-Segmentation/
 │
 ├── Notebook/
 │   └── Banking_Customer_Segmentation.ipynb
+├
+├── Screenshots/
 │
 ├── .streamlit/
 │   └── secrets.toml          # Local only; not committed to GitHub
