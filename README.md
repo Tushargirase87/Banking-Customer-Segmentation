@@ -189,16 +189,16 @@ The application should open in your browser.
 ## 📸 Application Screenshots
 
 ### Home Page
-![Home Page](screenshots/home.png)
+![Home Page](Screenshots/home-page.png)
 
 ### Customer Prediction
-![Customer Prediction](screenshots/customer-prediction.png)
+![Customer Prediction](Screenshots/customer-prediction.png)
 
 ### Customer Dashboard
-![Customer Dashboard](screenshots/customer-dashboard.png)
+![Customer Dashboard](Screenshots/customer-dashboard.png)
 
 ### Admin Login & Customer Management
-![Customer Management](screenshots/customer-management.png)
+![Customer Management](Screenshots/customer-management.png)
 
 > Replace these image paths with your actual screenshot filenames. The images will appear on GitHub once the corresponding files are uploaded.
 
